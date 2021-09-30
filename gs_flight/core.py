@@ -26,7 +26,7 @@ class CallbackEvent:
         SHOCK              = 8
 
 class FlightController():
-    def __init__(self, callback, namespace = ""):
+    def __init__(self, callback, namespace = "", pioneer = None):
         if namespace != "":
             namespace += "/"
         rospy.wait_for_service(f"{namespace}geoscan/alive")
@@ -37,7 +37,7 @@ class FlightController():
         self.__event_service = ServiceProxy(f"{namespace}geoscan/flight/set_event", Event)
         self.__yaw_service=ServiceProxy(f"{namespace}geoscan/flight/set_yaw", Yaw)
         self.__local_position_service = ServiceProxy(f"{namespace}geoscan/flight/set_local_position", Position)
-        self.__callback_event = Subscriber(f"{namespace}geoscan/flight/callback_event", Int32, callback)
+        self.__callback_event = Subscriber(f"{namespace}geoscan/flight/callback_event", Int32, callback, (pioneer, ))
     
     def goToLocalPoint(self,x,y,z,time=0):
         if self.__alive().status:
