@@ -29,10 +29,6 @@ class FlightController():
     def __init__(self, callback, namespace = "", pioneer = None):
         if namespace != "":
             namespace += "/"
-        rospy.wait_for_service(f"{namespace}geoscan/alive")
-        rospy.wait_for_service(f"{namespace}geoscan/flight/set_event")
-        rospy.wait_for_service(f"{namespace}geoscan/flight/set_yaw")
-        rospy.wait_for_service(f"{namespace}geoscan/flight/set_local_position")
         self.__alive = ServiceProxy(f"{namespace}geoscan/alive", Live)
         self.__event_service = ServiceProxy(f"{namespace}geoscan/flight/set_event", Event)
         self.__yaw_service=ServiceProxy(f"{namespace}geoscan/flight/set_yaw", Yaw)
