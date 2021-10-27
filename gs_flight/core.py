@@ -26,14 +26,12 @@ class CallbackEvent:
         SHOCK              = 8
 
 class FlightController():
-    def __init__(self, callback, namespace = "", pioneer = None):
-        if namespace != "":
-            namespace += "/"
-        self.__alive = ServiceProxy(f"{namespace}geoscan/alive", Live)
-        self.__event_service = ServiceProxy(f"{namespace}geoscan/flight/set_event", Event)
-        self.__yaw_service=ServiceProxy(f"{namespace}geoscan/flight/set_yaw", Yaw)
-        self.__local_position_service = ServiceProxy(f"{namespace}geoscan/flight/set_local_position", Position)
-        self.__callback_event = Subscriber(f"{namespace}geoscan/flight/callback_event", Int32, callback, (pioneer, ))
+    def __init__(self, callback, namespace = ""):
+        self.__alive = ServiceProxy(f"{namespace}/geoscan/alive", Live)
+        self.__event_service = ServiceProxy(f"{namespace}/geoscan/flight/set_event", Event)
+        self.__yaw_service=ServiceProxy(f"{namespace}/geoscan/flight/set_yaw", Yaw)
+        self.__local_position_service = ServiceProxy(f"{namespace}/geoscan/flight/set_local_position", Position)
+        self.__callback_event = Subscriber(f"{namespace}/geoscan/flight/callback_event", Int32, callback, (namespace, ))
     
     def goToLocalPoint(self,x,y,z,time=0):
         if self.__alive().status:
