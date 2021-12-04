@@ -5,7 +5,7 @@ import rospy
 from rospy import ServiceProxy, Subscriber
 from std_msgs.msg import Int32
 from geometry_msgs.msg import Point
-from gs_interfaces.srv import Event, Yaw, Position,Live
+from gs_interfaces.srv import Event, Yaw, Position, Wait, Live
 
 """
 0-preflight
@@ -24,6 +24,7 @@ class CallbackEvent:
         TAKEOFF_COMPLETE   = 6
         ENGINES_STARTED    = 7
         SHOCK              = 8
+        WAIT_COMPLETE      = 9
 
 class FlightController():
     def __init__(self, callback, namespace = ""):
@@ -31,6 +32,7 @@ class FlightController():
         self.__event_service = ServiceProxy(f"{namespace}/geoscan/flight/set_event", Event)
         self.__yaw_service=ServiceProxy(f"{namespace}/geoscan/flight/set_yaw", Yaw)
         self.__local_position_service = ServiceProxy(f"{namespace}/geoscan/flight/set_local_position", Position)
+        self.__wait_service = ServiceProxy(f"{namespace}/geoscan/flight/set_wait", Wait)
         self.__callback_event = Subscriber(f"{namespace}/geoscan/flight/callback_event", Int32, callback, namespace)
     
     def goToLocalPoint(self,x,y,z,time=0):
@@ -46,6 +48,12 @@ class FlightController():
     def updateYaw(self, angle):
         if self.__alive().status:
             return self.__yaw_service(angle).status
+        else:
+            rospy.logwarn("Wait, connecting to flight controller")
+
+    def wait(self, seconds):
+        if self.__alive().status:
+            return self.__wait_service(seconds).status
         else:
             rospy.logwarn("Wait, connecting to flight controller")
 
