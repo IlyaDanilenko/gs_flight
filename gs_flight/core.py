@@ -3,9 +3,9 @@
 
 import rospy
 from rospy import ServiceProxy, Subscriber
-from std_msgs.msg import Bool,Int32
+from std_msgs.msg import Bool, Int32
 from geometry_msgs.msg import Point
-from gs_interfaces.srv import Event,Yaw,Position,PositionGPS,Live
+from gs_interfaces.srv import Event, Yaw, Position, PositionGPS, Live
 from gs_interfaces.msg import PointGPS
 
 """
@@ -33,24 +33,24 @@ class FlightController():
         rospy.wait_for_service("geoscan/flight/set_yaw")
         rospy.wait_for_service("geoscan/flight/set_local_position")
         rospy.wait_for_service("geoscan/flight/set_global_position")
-        self.__alive = ServiceProxy("geoscan/alive",Live)
-        self.__event_service = ServiceProxy("geoscan/flight/set_event",Event)
-        self.__yaw_service=ServiceProxy("geoscan/flight/set_yaw",Yaw)
-        self.__local_position_service = ServiceProxy("geoscan/flight/set_local_position",Position)
-        self.__global_position_service = ServiceProxy("geoscan/flight/set_global_position",PositionGPS)
-        self.__callback_event=Subscriber("geoscan/flight/callback_event",Int32, callback)
+        self.__alive = ServiceProxy("geoscan/alive", Live)
+        self.__event_service = ServiceProxy("geoscan/flight/set_event", Event)
+        self.__yaw_service=ServiceProxy("geoscan/flight/set_yaw", Yaw)
+        self.__local_position_service = ServiceProxy("geoscan/flight/set_local_position", Position)
+        self.__global_position_service = ServiceProxy("geoscan/flight/set_global_position", PositionGPS)
+        self.__callback_event = Subscriber("geoscan/flight/callback_event", Int32, callback)
     
-    def goToLocalPoint(self,x,y,z,time=0):
+    def goToLocalPoint(self, x, y, z, time = 0):
         if self.__alive().status:
             point = Point()
             point.x = x
             point.y = y
             point.z = z
-            return self.__local_position_service(point,time).status
+            return self.__local_position_service(point, time).status
         else:
             rospy.logwarn("Wait, connecting to flight controller")
 
-    def goToPoint(self,latitude,longitude,altitude):
+    def goToPoint(self, latitude, longitude, altitude):
         if self.__alive().status:
             point_gps = PointGPS()
             point_gps.latitude = latitude
