@@ -1,1 +1,1 @@
-from .core import FlightController, CallbackEvent
+from .gs_flight import FlightController, CallbackEvent
